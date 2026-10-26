@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Тесты по тригонометрии</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script defer src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#eef1f5;font-family:Arial,Helvetica,sans-serif;color:#222;font-size:17px}
+header{background:#2f7bc0;color:#fff;padding:14px 20px;font-size:20px;display:flex;justify-content:space-between;align-items:center}
+header .timer{font-weight:bold;font-variant-numeric:tabular-nums}
+main{max-width:820px;margin:20px auto;padding:0 12px}
+.card{background:#fff;border:1px solid #d8dee6;border-radius:6px;padding:22px;margin-bottom:16px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+h1,h2{margin:0 0 12px}
+h2{font-size:20px}
+.tests{display:grid;gap:12px}
+.test-item{border:1px solid #c9d3df;border-radius:6px;padding:14px;cursor:pointer;background:#f8fafc}
+.test-item.sel{border-color:#2f7bc0;background:#e8f2fb}
+.test-item b{display:block;margin-bottom:4px}
+.muted{color:#667;font-size:15px}
+label.row{display:block;margin:12px 0 4px}
+input[type=text]{padding:9px 10px;font-size:17px;border:1px solid #b9c4d0;border-radius:4px;width:100%;max-width:300px}
+button{background:#2f7bc0;color:#fff;border:0;border-radius:4px;padding:11px 22px;font-size:17px;cursor:pointer}
+button:hover{background:#2a6cab}
+button.sec{background:#e3e8ee;color:#223}
+button.sec:hover{background:#d4dbe3}
+button:disabled{background:#aab;cursor:default}
+.prog{height:8px;background:#dde3ea;border-radius:4px;overflow:hidden;margin-bottom:14px}
+.prog div{height:100%;background:#4caf50;transition:width .3s}
+.qhead{display:flex;justify-content:space-between;color:#556;font-size:15px;margin-bottom:12px}
+.qtext{font-size:19px;line-height:1.55;margin-bottom:16px;user-select:none;-webkit-user-select:none}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid #d0d8e2;border-radius:5px;margin-bottom:8px;cursor:pointer;user-select:none}
+.opt:hover{background:#f2f7fc}
+.opt input{margin-top:5px;transform:scale(1.2)}
+.opt.ok{background:#e4f6e5;border-color:#4caf50}
+.opt.bad{background:#fde7e7;border-color:#e05252}
+.opt.locked{cursor:default}
+.fb{margin-top:14px;padding:12px 14px;border-radius:5px}
+.fb.ok{background:#e4f6e5;border:1px solid #4caf50}
+.fb.bad{background:#fde7e7;border:1px solid #e05252}
+.sol{margin-top:10px;padding:12px 14px;background:#f5f7fa;border-left:4px solid #2f7bc0;line-height:1.6}
+.actions{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+.score{font-size:30px;font-weight:bold;margin:6px 0}
+table{border-collapse:collapse;width:100%}
+td,th{border-bottom:1px solid #e0e5eb;padding:8px 6px;text-align:left;font-size:16px}
+details{border-bottom:1px solid #e0e5eb;padding:8px 0}
+summary{cursor:pointer}
+.yes{color:#2e8b3a;font-weight:bold}.no{color:#d03a3a;font-weight:bold}
+.hidden{display:none}
+.desmos{height:340px;margin-top:12px;border:1px solid #d0d8e2;border-radius:5px}
+</style>
+</head>
+<body>
+<header><span>Тригонометрия: подготовка к ЦТ/ЦЭ</span><span class="timer hidden" id="timer"></span></header>
+<main id="app"></main>
+
+<script>
+/* ===================== ДАННЫЕ ТЕСТОВ ===================== */
+/* t: 'num' (ввод числа), 'one' (один ответ), 'multi' (несколько ответов)
+   a: число / индекс верного варианта (с 0) / массив индексов */
+const R = String.raw;
+const TESTS = {
+eq: {
+  title: "Тригонометрические уравнения",
+  desc: "10 заданий: уравнения, отбор корней на промежутке, ответ — число.",
+  qs: [
+  {t:'num', a:160,
+   q:R`Решите уравнение $\sqrt{3}\cos\left(\dfrac{5\pi}{18}+\pi x\right)=-1{,}5$. В ответ запишите увеличенное в 3 раза произведение наибольшего корня на количество корней этого уравнения на промежутке $[3;\,9]$.`,
+   sol:R`$\cos\left(\frac{5\pi}{18}+\pi x\right)=-\frac{\sqrt3}{2}$, откуда $x=\frac59+2n$ или $x=-\frac{10}{9}+2n$, $n\in\mathbb Z$.<br>На $[3;9]$: первая серия даёт $n=2,3,4$, вторая — $n=3,4,5$. Всего 6 корней, наибольший $x=-\frac{10}{9}+10=8\frac89=\frac{80}{9}$.<br>$3\cdot 6\cdot\frac{80}{9}=160$.`},
+  {t:'num', a:-62,
+   q:R`Найдите (в градусах) наименьший корень уравнения $\cos 8x\cos 7x-\sin 8x\sin 7x=-\dfrac{\sqrt3}{2}$ на промежутке $(-75^\circ;\,0^\circ)$.`,
+   sol:R`По формуле косинуса суммы $\cos 15x=-\frac{\sqrt3}{2}$, $15x=\pm150^\circ+360^\circ k$, то есть $x=10^\circ+24^\circ k$ или $x=-10^\circ+24^\circ k$ (серия $14^\circ+24^\circ k$ даёт те же значения).<br>В промежутке $(-75^\circ;0^\circ)$ наименьший корень равен $-62^\circ$.`},
+  {t:'num', a:28,
+   q:R`Найдите (в градусах) корень уравнения $4\cos(58^\circ-x)\cos(32^\circ+x)=\sqrt3$ на промежутке $(0^\circ;\,45^\circ)$.`,
+   sol:R`$2\left(\cos 90^\circ+\cos(26^\circ-2x)\right)=\sqrt3$, $\cos(26^\circ-2x)=\frac{\sqrt3}{2}$.<br>$26^\circ-2x=\pm30^\circ+360^\circ k$: $x=-2^\circ-180^\circ k$ или $x=28^\circ-180^\circ k$.<br>В $(0^\circ;45^\circ)$ подходит только $x=28^\circ$.`},
+  {t:'num', a:-165,
+   q:R`Найдите (в градусах) наименьший корень уравнения $1-\sin 7x=\left(\cos\dfrac{5x}{2}-\sin\dfrac{5x}{2}\right)^2$ на промежутке $(-180^\circ;\,60^\circ]$.`,
+   sol:R`Раскрываем квадрат: $1-\sin7x=1-\sin5x$, $\sin7x-\sin5x=0$, $2\sin x\cos 6x=0$.<br>$\sin x=0$: $x=180^\circ n$; $\cos6x=0$: $x=15^\circ+30^\circ k$.<br>Наименьший корень в промежутке: $k=-6$, $x=-165^\circ$ (при $k\le-7$ значение меньше $-180^\circ$).`},
+  {t:'num', a:2,
+   q:R`Найдите количество корней уравнения $\cos^2x-7\sin^2x=3\sin 2x$ на промежутке $[0;\,\pi]$.`,
+   sol:R`$\cos^2x-7\sin^2x=6\sin x\cos x$ — однородное уравнение. Делим на $\cos^2x$ ($\cos x=0$ не является корнем): $1-7\operatorname{tg}^2x=6\operatorname{tg}x$.<br>$7t^2+6t-1=0$, $t=\frac17$ или $t=-1$.<br>На $[0;\pi]$: $\operatorname{tg}x=\frac17$ даёт один корень, $\operatorname{tg}x=-1$ даёт $x=\frac{3\pi}{4}$. Всего 2 корня. График (Desmos) показывает те же две точки пересечения.`,
+   graph:{bounds:{left:-0.4,right:3.6,bottom:-3,top:3},
+    exprs:[R`y=\tan\left(x\right)\left\{0\le x\le\pi\right\}`,R`y=\frac{1}{7}\left\{0\le x\le\pi\right\}`,R`y=-1\left\{0\le x\le\pi\right\}`,R`\left(\arctan\left(\frac{1}{7}\right),\frac{1}{7}\right)`,R`\left(\frac{3\pi}{4},-1\right)`]}},
+  {t:'num', a:-445,
+   q:R`Найдите (в градусах) сумму различных корней уравнения $2\sin 6x\cos 6x-\sin 12x\sin 9x=0$ на промежутке $(-110^\circ;\,-30^\circ)$.`,
+   sol:R`$\sin12x(1-\sin9x)=0$.<br>$\sin12x=0$: $x=15^\circ n$; в промежутке: $-105^\circ,-90^\circ,-75^\circ,-60^\circ,-45^\circ$.<br>$\sin9x=1$: $x=10^\circ+40^\circ n$; в промежутке: $-70^\circ$.<br>Сумма: $-375^\circ-70^\circ=-445^\circ$.`},
+  {t:'num', a:180,
+   q:R`Решите уравнение $\cos 2x+10\sin x-9=0$. В ответе укажите наименьший корень (в градусах), принадлежащий промежутку $[0^\circ;\,90^\circ]$, умноженный на два.`,
+   sol:R`$1-2\sin^2x+10\sin x-9=0$, $\sin^2x-5\sin x+4=0$, $\sin x=1$ или $\sin x=4$ (нет корней).<br>$x=90^\circ+360^\circ n$; на $[0^\circ;90^\circ]$ корень $90^\circ$. $90\cdot2=180$.`},
+  {t:'num', a:-15,
+   q:R`Найдите сумму (в градусах) наименьшего положительного и наибольшего отрицательного корней уравнения $\sin 4x-\sqrt3\cos 2x=0$.`,
+   sol:R`$\cos2x\,(2\sin2x-\sqrt3)=0$.<br>$x=\frac{\pi}{4}+\frac{\pi n}{2}$, $x=\frac{\pi}{6}+\pi k$, $x=\frac{\pi}{3}+\pi m$.<br>Наибольший отрицательный корень: $-\frac{\pi}{4}=-45^\circ$; наименьший положительный: $\frac{\pi}{6}=30^\circ$. Сумма $-15^\circ$.`},
+  {t:'num', a:-45,
+   q:R`Найдите (в градусах) наибольший отрицательный корень уравнения $\dfrac{\cos(5\pi-2x)}{1+\cos\left(\frac{3\pi}{2}-2x\right)}=0$.`,
+   sol:R`По формулам приведения: $\frac{-\cos2x}{1-\sin2x}=0$.<br>$\cos2x=0$ и $\sin2x\ne1$: $2x=\frac{\pi}{2}+\pi n$, $2x\ne\frac{\pi}{2}+2\pi n$, откуда $x=\frac{3\pi}{4}+\pi k$.<br>Наибольший отрицательный корень при $k=-1$: $x=-\frac{\pi}{4}=-45^\circ$.`},
+  {t:'num', a:180,
+   q:R`Найдите (в градусах) наименьший положительный корень уравнения $\sqrt{1+\cos x}=-\sin x$.`,
+   sol:R`Условие: $\sin x\le0$. Возводим в квадрат: $1+\cos x=1-\cos^2x$, $\cos x(1+\cos x)=0$.<br>С учётом $\sin x\le0$: $x=-\frac{\pi}{2}+2\pi n$ или $x=\pi+2\pi n$.<br>Положительные корни: $180^\circ$ и $270^\circ$. Наименьший — $180^\circ$.`}
+  ]},
+tr: {
+  title: "Преобразование тригонометрических выражений",
+  desc: "10 заданий: вычисления, обратные функции, формулы приведения; ответ — число, один или несколько вариантов.",
+  qs: [
+  {t:'one', a:4,
+   q:R`Значение выражения $\operatorname{arcctg}\left(\operatorname{tg}\dfrac{3\pi}{5}\right)-\dfrac{3\pi}{5}$ равно:`,
+   opts:[R`$0$`,R`$-\pi$`,R`$-\dfrac{7\pi}{10}$`,R`$\dfrac{9\pi}{10}$`,R`$\dfrac{3\pi}{10}$`],
+   sol:R`$\operatorname{arcctg}(\operatorname{ctg}\alpha)=\alpha$ только при $\alpha\in(0;\pi)$. $\operatorname{tg}\frac{3\pi}{5}=\operatorname{ctg}\left(\frac{\pi}{2}-\frac{3\pi}{5}\right)=\operatorname{ctg}\left(-\frac{\pi}{10}\right)=\operatorname{ctg}\frac{9\pi}{10}$.<br>$\frac{9\pi}{10}-\frac{3\pi}{5}=\frac{3\pi}{10}$.`},
+  {t:'num', a:-45,
+   q:R`Найдите значение выражения $15\sqrt3\,\operatorname{tg}\dfrac{8\pi}{3}$.`,
+   sol:R`$\operatorname{tg}\frac{8\pi}{3}=\operatorname{tg}\frac{2\pi}{3}=-\sqrt3$. $15\sqrt3\cdot(-\sqrt3)=-45$.`},
+  {t:'num', a:12,
+   q:R`Найдите значение выражения $\dfrac{18}{\pi}\arccos\left(-\dfrac12\right)$.`,
+   sol:R`$\arccos\left(-\frac12\right)=\pi-\arccos\frac12=\pi-\frac{\pi}{3}=\frac{2\pi}{3}$. $\frac{18}{\pi}\cdot\frac{2\pi}{3}=12$.`},
+  {t:'one', a:3,
+   q:R`Значение выражения $\cos\dfrac{\pi}{6}\cdot\operatorname{tg}\dfrac{2\pi}{3}$ равно:`,
+   opts:[R`$-6$`,R`$-2$`,R`$\dfrac32$`,R`$-\dfrac32$`,R`$6$`],
+   sol:R`$\operatorname{tg}\frac{2\pi}{3}=\operatorname{tg}\left(\pi-\frac{\pi}{3}\right)=-\operatorname{tg}\frac{\pi}{3}=-\sqrt3$.<br>$\frac{\sqrt3}{2}\cdot(-\sqrt3)=-\frac32$.`},
+  {t:'one', a:0,
+   q:R`Среди значений аргумента, равных $-\dfrac{5\pi}{2},\ -6\pi,\ \dfrac{\pi}{6},\ \dfrac{\pi}{4},\ -\dfrac{\pi}{3}$, укажите то, при котором значение функции $y=\cos x$ равно нулю.`,
+   opts:[R`$-\dfrac{5\pi}{2}$`,R`$-6\pi$`,R`$\dfrac{\pi}{6}$`,R`$\dfrac{\pi}{4}$`,R`$-\dfrac{\pi}{3}$`],
+   sol:R`$\cos x=0$ при $x=\frac{\pi}{2}+\pi n$. При $n=-3$: $x=-\frac{5\pi}{2}$.`},
+  {t:'one', a:0,
+   q:R`Найдите значение выражения $\dfrac{78}{\pi}\arcsin\left(-\dfrac12\right)-6$.`,
+   opts:[R`$-19$`,R`$-33$`,R`$19$`,R`$7$`,R`$-7$`],
+   sol:R`$\arcsin\left(-\frac12\right)=-\frac{\pi}{6}$. $\frac{78}{\pi}\cdot\left(-\frac{\pi}{6}\right)-6=-13-6=-19$.`},
+  {t:'num', a:-8,
+   q:R`Найдите значение выражения $18\cos\left(\alpha+\dfrac{\pi}{4}\right)$, если $\sin 2\alpha=\dfrac{49}{81}$, $2\alpha\in\left(\dfrac{\pi}{2};\,\pi\right)$.`,
+   sol:R`$\frac{\pi}{4}<\alpha<\frac{\pi}{2}$, поэтому $\frac{\pi}{2}<\alpha+\frac{\pi}{4}<\frac{3\pi}{4}$ и косинус отрицателен.<br>$\cos^2\left(\alpha+\frac{\pi}{4}\right)=\frac12(1-\sin2\alpha)=\frac12\cdot\frac{32}{81}=\frac{16}{81}$, $\cos\left(\alpha+\frac{\pi}{4}\right)=-\frac49$.<br>$18\cdot\left(-\frac49\right)=-8$.`},
+  {t:'one', a:0,
+   q:R`Значение выражения $10\sin\dfrac{11\pi}{12}\cos\dfrac{11\pi}{12}$ равно:`,
+   opts:[R`$-2{,}5$`,R`$2{,}5$`,R`$-\dfrac{5\sqrt3}{2}$`,R`$\dfrac{5\sqrt3}{2}$`,R`$\dfrac{5\sqrt2}{2}$`],
+   sol:R`$10\sin\frac{11\pi}{12}\cos\frac{11\pi}{12}=5\sin\frac{11\pi}{6}=5\sin\left(2\pi-\frac{\pi}{6}\right)=-5\sin\frac{\pi}{6}=-2{,}5$.`},
+  {t:'num', a:-0.875,
+   q:R`Найдите значение выражения $\dfrac{2\sin2\alpha-3}{2\cos^2\alpha}$, если $\operatorname{tg}\alpha=\dfrac12$, $\alpha\in\left(0;\,\dfrac{\pi}{2}\right)$. (Ответ — десятичная дробь.)`,
+   sol:R`На промежутке $\cos\alpha\ne0$. Записываем $3=3\sin^2\alpha+3\cos^2\alpha$ и делим числитель и знаменатель на $\cos^2\alpha$:<br>$\frac{4\operatorname{tg}\alpha-3\operatorname{tg}^2\alpha-3}{2}=\frac{2-\frac34-3}{2}=-\frac78=-0{,}875$.`},
+  {t:'multi', a:[0,2,4],
+   q:R`Выберите три верных утверждения, если известно, что $\sin\alpha=\sin23^\circ$ и $\cos\alpha=-\cos23^\circ$.`,
+   opts:[R`$\sin(\alpha+23^\circ)=0$`,R`$\operatorname{tg}\alpha>0$`,R`$\operatorname{ctg}\alpha<0$`,R`$\alpha$ — угол первой четверти`,R`$\sin^2\alpha+\cos^223^\circ=1$`,R`$\alpha=-23^\circ$`],
+   sol:R`$\cos\alpha<0$, $\sin\alpha>0$, значит $\alpha=180^\circ-23^\circ=157^\circ$ (вторая четверть).<br>1) $\sin(157^\circ+23^\circ)=\sin180^\circ=0$ — верно. 2) $\operatorname{tg}\alpha<0$ — неверно. 3) $\operatorname{ctg}\alpha<0$ — верно. 4) неверно. 5) $\sin^2\alpha=\sin^223^\circ$, сумма равна 1 — верно. 6) неверно.`}
+  ]}
+};
+
+/* ===================== ДВИЖОК ===================== */
+const TIME_LIMIT = 45*60;
+const app = document.getElementById('app');
+const timerEl = document.getElementById('timer');
+let S = null, timerId = null, selTest = 'eq';
+
+const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const mathify = el => { if(window.renderMathInElement) renderMathInElement(el,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false}); };
+const fmt = s => String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const num = s => parseFloat(String(s).trim().replace(',','.').replace(/[−–—]/g,'-').replace(/\s/g,''));
+
+function drawGraph(el,g){
+  if(!el||el.dataset.done) return; el.dataset.done='1';
+  if(!window.Desmos){el.textContent='График недоступен: нет подключения к Desmos.';return;}
+  const c=Desmos.GraphingCalculator(el,{expressions:false,settingsMenu:false,keypad:false,zoomButtons:true});
+  c.setMathBounds(g.bounds);
+  const col=['#2d70b3','#388c46','#c74440','#c74440','#c74440'];
+  g.exprs.forEach((l,i)=>c.setExpression({id:'e'+i,latex:l,color:col[i%col.length]}));
+}
+function setHTML(h){ app.innerHTML=h; mathify(app); }
+
+/* ---------- старт ---------- */
+function showStart(){
+  clearInterval(timerId); timerEl.classList.add('hidden'); S=null;
+  let hist=''; try{ const h=JSON.parse(localStorage.getItem('trigHist')||'[]'); if(h.length) hist='<div class="card"><h2>Последние результаты</h2><table>'+h.slice(-5).reverse().map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.title)}</td><td>${esc(x.name||'')}</td><td><b>${x.score} / ${x.total}</b></td></tr>`).join('')+'</table></div>'; }catch(e){}
+  setHTML(`<div class="card"><h1>Тесты по тригонометрии</h1>
+    <p class="muted">Подготовка учащихся 10–11 классов к ЦЭ/ЦТ. Вопросы и варианты ответов перемешиваются, на тест даётся 45 минут, после ответа сразу показывается решение.</p>
+    <div class="tests">${Object.entries(TESTS).map(([k,t])=>`<div class="test-item ${k===selTest?'sel':''}" data-k="${k}"><b>${t.title}</b><span class="muted">${t.desc}</span></div>`).join('')}</div>
+    <label class="row">Ваше имя (необязательно)</label><input type="text" id="nm" maxlength="40">
+    <label class="row">Количество вопросов: <b id="cnt">10</b></label><input type="range" id="rng" min="3" max="10" value="10">
+    <div class="actions"><button id="go">Начать тест</button></div></div>${hist}`);
+  app.querySelectorAll('.test-item').forEach(e=>e.onclick=()=>{selTest=e.dataset.k;showStart();});
+  document.getElementById('rng').oninput=e=>document.getElementById('cnt').textContent=e.target.value;
+  document.getElementById('go').onclick=()=>start(selTest,+document.getElementById('rng').value,document.getElementById('nm').value.trim());
+}
+
+function start(key,count,name){
+  const T=TESTS[key];
+  const qs=shuffle(T.qs).slice(0,count).map(q=>{
+    const o={...q};
+    if(q.opts){ const ca=Array.isArray(q.a)?q.a:[q.a]; o.opts=shuffle(q.opts.map((t,k)=>({t,ok:ca.includes(k)}))); }
+    return o;
+  });
+  S={key,title:T.title,name,qs,i:0,answered:false,res:qs.map(()=>({done:false,ok:false,given:''})),end:Date.now()+TIME_LIMIT*1000};
+  timerEl.classList.remove('hidden');
+  tick(); timerId=setInterval(tick,500);
+  renderQ();
+}
+
+function tick(){
+  const left=Math.max(0,Math.round((S.end-Date.now())/1000));
+  timerEl.textContent='⏱ '+fmt(left);
+  if(left<=0){clearInterval(timerId);finish(true);}
+}
+
+/* ---------- вопрос ---------- */
+function renderQ(){
+  const q=S.qs[S.i], n=S.qs.length;
+  S.answered=false;
+  let body='';
+  if(q.t==='num') body=`<input type="text" id="ans" inputmode="decimal" autocomplete="off" placeholder="Введите ответ (число)">`;
+  else body=q.opts.map((o,k)=>`<label class="opt"><input type="${q.t==='one'?'radio':'checkbox'}" name="o" value="${k}"><span>${o.t}</span></label>`).join('');
+  const hint=q.t==='num'?'Введите число':q.t==='one'?'Выберите один вариант ответа':'Выберите все верные утверждения';
+  setHTML(`<div class="prog"><div style="width:${S.i/n*100}%"></div></div>
+   <div class="card" oncopy="return false" oncontextmenu="return false">
+    <div class="qhead"><span>Вопрос ${S.i+1} из ${n}</span><span>${hint}</span></div>
+    <div class="qtext">${q.q}</div>
+    <div id="body">${body}</div>
+    <div id="fb"></div>
+    <div class="actions"><button id="ok">Ответить</button><button class="sec" id="fin">Завершить тест</button></div>
+   </div>`);
+  document.getElementById('ok').onclick=submit;
+  document.getElementById('fin').onclick=()=>{ if(confirm('Завершить тест? Неотвеченные вопросы будут засчитаны как неверные.')){clearInterval(timerId);finish(false);} };
+  const a=document.getElementById('ans'); if(a){a.focus();a.onkeydown=e=>{if(e.key==='Enter')submit();};}
+}
+
+function submit(){
+  if(S.answered) return;
+  const q=S.qs[S.i]; let ok=false, given='', correctTxt='';
+  if(q.t==='num'){
+    const raw=document.getElementById('ans').value;
+    if(!raw.trim()){alert('Введите ответ.');return;}
+    const v=num(raw); given=raw.trim(); ok=!isNaN(v)&&Math.abs(v-q.a)<1e-9;
+    correctTxt=String(q.a).replace('.',',');
+  } else {
+    const chosen=[...app.querySelectorAll('input[name=o]:checked')].map(e=>+e.value);
+    if(!chosen.length){alert('Выберите ответ.');return;}
+    ok=q.opts.every((o,k)=>o.ok===chosen.includes(k));
+    given=chosen.map(k=>q.opts[k].t).join('; ');
+    correctTxt=q.opts.filter(o=>o.ok).map(o=>o.t).join('; ');
+    app.querySelectorAll('.opt').forEach((l,k)=>{
+      l.classList.add('locked');
+      const inp=l.querySelector('input'); inp.disabled=true;
+      if(q.opts[k].ok) l.classList.add('ok'); else if(chosen.includes(k)) l.classList.add('bad');
+    });
+  }
+  S.answered=true;
+  S.res[S.i]={done:true,ok,given,correct:correctTxt};
+  if(q.t==='num') document.getElementById('ans').disabled=true;
+  const last=S.i===S.qs.length-1;
+  document.getElementById('fb').innerHTML=`<div class="fb ${ok?'ok':'bad'}">${ok?'<b>Верно!</b>':'<b>Неверно.</b> Правильный ответ: '+(q.t==='num'?esc(correctTxt):correctTxt)}</div><div class="sol"><b>Решение.</b><br>${q.sol}</div>${q.graph?'<div class="desmos" id="dg"></div>':''}`;
+  mathify(document.getElementById('fb'));
+  if(q.graph) drawGraph(document.getElementById('dg'),q.graph);
+  const btn=document.getElementById('ok');
+  btn.textContent=last?'Показать результат':'Следующий вопрос';
+  btn.onclick=()=>{ if(last){clearInterval(timerId);finish(false);} else {S.i++;renderQ();} };
+}
+
+/* ---------- результат ---------- */
+function finish(timeout){
+  const total=S.qs.length, score=S.res.filter(r=>r.ok).length, pct=Math.round(score/total*100);
+  timerEl.classList.add('hidden');
+  try{ const h=JSON.parse(localStorage.getItem('trigHist')||'[]'); h.push({date:new Date().toLocaleString('ru-RU'),title:S.title,name:S.name,score,total}); localStorage.setItem('trigHist',JSON.stringify(h.slice(-30))); }catch(e){}
+  const rows=S.qs.map((q,k)=>{const r=S.res[k]; const ans=q.t==='num'?String(q.a).replace('.',','):q.opts.filter(o=>o.ok).map(o=>o.t).join('; ');
+    return `<details><summary><span class="${r.ok?'yes':'no'}">${r.ok?'✓':'✗'}</span> Вопрос ${k+1}${r.done?'':' (нет ответа)'}</summary>
+      <div class="qtext" style="margin-top:10px">${q.q}</div>
+      ${r.done?`<p>Ваш ответ: ${q.t==='num'?esc(r.given):r.given}</p>`:''}
+      <p>Правильный ответ: ${q.t==='num'?esc(ans):ans}</p><div class="sol">${q.sol}</div>${q.graph?'<div class="desmos" data-gi="'+k+'"></div>':''}</details>`;}).join('');
+  setHTML(`<div class="card"><h2>${esc(S.title)}</h2>
+    ${timeout?'<p class="no">Время вышло.</p>':''}
+    ${S.name?`<p class="muted">Участник: ${esc(S.name)}</p>`:''}
+    <div class="score">${score} из ${total} баллов (${pct}%)</div>
+    <div class="prog"><div style="width:${pct}%"></div></div>
+    <div class="actions"><button id="again">Пройти заново</button><button class="sec" id="home">К выбору теста</button></div></div>
+    <div class="card"><h2>Разбор заданий</h2>${rows}</div>`);
+  app.querySelectorAll('details').forEach(d=>d.addEventListener('toggle',()=>{ const e=d.querySelector('.desmos'); if(d.open&&e) drawGraph(e,S.qs[+e.dataset.gi].graph); }));
+  document.getElementById('again').onclick=()=>start(S.key,S.qs.length,S.name);
+  document.getElementById('home').onclick=showStart;
+}
+
+/* запрет возврата назад и копирования */
+history.pushState(null,'',location.href);
+window.addEventListener('popstate',()=>history.pushState(null,'',location.href));
+document.addEventListener('copy',e=>{ if(S && !document.querySelector('.sol')?.contains(e.target)) e.preventDefault(); });
+window.addEventListener('load',showStart);
+</script>
+</body>
+</html>
